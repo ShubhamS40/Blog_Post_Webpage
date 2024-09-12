@@ -15,9 +15,9 @@ const categories: Category[] = [
 
 const PopularCategories: React.FC = () => {
   return (
-    <section className="container px-4 py-8 mx-auto lg:flex lg:items-center">
+    <section className="container px-16 py-8 mx-auto border-2 rounded-lg  lg:flex lg:items-center">
       <div className="w-full lg:w-1/4 mb-6 lg:mb-0">
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+        <h2 className="text-[1.5vw] font-semibold text-gray-800 dark:text-gray-200">
           Popular Categories
         </h2>
       </div>

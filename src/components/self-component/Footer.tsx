@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Right Side */}
-      <div className="flex border-2 justify-around flex-col md:flex-row md:w-1/3 space-y-3 md:space-y-0 md:space-x-4 p-3 rounded-lg">
+      <div className="flex  justify-around flex-col md:flex-row md:w-1/3 space-y-3 md:space-y-0 md:space-x-4 p-3 rounded-lg">
         {/* Links */}
         <div className="flex flex-col space-y-1">
           <h1 className="text-lg font-semibold">Link</h1>

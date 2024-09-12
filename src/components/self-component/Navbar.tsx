@@ -61,6 +61,11 @@ const Navbar = () => {
                 Blog
               </span>
             </Link>
+            <Link href="/writeblog">
+              <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-gray-700">
+                Write
+              </span>
+            </Link>
           </div>
           <div className='space-x-3'>
             <Button variant="outline">Login</Button>
