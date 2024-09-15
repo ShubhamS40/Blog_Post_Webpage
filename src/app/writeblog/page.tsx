@@ -1,135 +1,125 @@
-"use client"; // Ensure this component is treated as a Client Component
+"use client";
 
-import React, { useState } from 'react';
-import { Button } from "@/components/ui/button"; // Ensure Button component exists in your project
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
-const WriteBlog: React.FC = () => {
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [title, setTitle] = useState<string>('');
-  const [author, setAuthor] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [content, setContent] = useState<string>('');
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setImageFile(file);
-      setImageUrl(URL.createObjectURL(file)); // Set image preview
+interface BlogPostData {
+  title: string;
+  author: string;
+  description: string;
+  date: string;
+  content: string;
+  authorImage: string;
+  imageUrl: string;
+}
+
+const Page = async ({ params }: PageProps) => {
+  const { slug } = params;
+
+  // Print slug to console
+  console.log('Slug:', slug);
+
+  // Fetch data from the API
+  const getData = async (slug: string): Promise<BlogPostData> => {
+    const res = await fetch(`http://localhost:3000/api/blogs/blogpost?slug=${slug}`, { cache: "no-store" });
+    if (!res.ok) {
+      throw new Error('Failed to fetch data');
     }
+    return res.json();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const [data, setData] = useState<BlogPostData | null>(null);
 
-    const blogData = {
-      imageUrl: imageUrl,
-      title,
-      author,
-      description,
-      content,
-    };
+  useEffect(() => {
+    // Print slug to console
+    console.log('Slug in useEffect:', slug);
 
-    try {
-      const formData = new FormData();
-      formData.append('image', imageFile as Blob); // Append image file
-      formData.append('blogData', JSON.stringify(blogData)); // Append other blog data
+    getData(slug)
+      .then(fetchedData => setData(fetchedData))
+      .catch(error => console.error('Error fetching data:', error));
+  }, [slug]);
 
-      // Replace with your API endpoint
-      const res = await fetch('http://localhost:3000/api/blogs', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to submit');
-      }
-
-      alert('Blog submitted successfully!');
-      // Reset form fields
-      setImageUrl('');
-      setImageFile(null);
-      setTitle('');
-      setAuthor('');
-      setDescription('');
-      setContent('');
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to submit blog.');
-    }
-  };
+  if (!data) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-lg w-full p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6">Write a New Blog</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="image" className="block text-lg font-bold">Image Upload</label>
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
-            />
-            {imageUrl && (
-              <div className="mt-2">
-                <img src={imageUrl} alt="Preview" className="w-full h-48 object-cover rounded-md shadow-sm" />
+    <div>
+      <div className="min-h-screen font-sans">
+        {/* Main Content */}
+        <main className="px-8 py-16">
+          <section className="flex flex-col lg:flex-row items-center lg:items-start justify-between space-y-8 lg:space-y-0 lg:space-x-12">
+            {/* Article Information */}
+            <div className="lg:w-3/5">
+              <h1 className="text-4xl font-bold mb-6">
+                {data.title}
+              </h1>
+              <div className="flex items-center space-x-2 mb-4">
+                <Image
+                  src={data.authorImage || "https://www.skillvertex.com/blog/wp-content/uploads/2023/12/Data-Science-2024-01-03T152151.126-1.png"}
+                  alt={data.author}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <p className="text-sm">{data.author}</p>
               </div>
-            )}
-          </div>
-          <div>
-            <label htmlFor="title" className="block text-lg font-bold">Title</label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
-              placeholder="Blog Title"
-            />
-          </div>
-          <div>
-            <label htmlFor="author" className="block text-lg font-bold">Author</label>
-            <input
-              type="text"
-              id="author"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
-              placeholder="Author Name"
-            />
-          </div>
-          <div>
-            <label htmlFor="description" className="block text-lg font-bold">Description</label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
-              rows={4}
-              placeholder="Short description of the blog"
-            />
-          </div>
-          <div>
-            <label htmlFor="content" className="block text-lg font-bold">Content</label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
-              rows={8}
-              placeholder="Full content of the blog"
-            />
-          </div>
-          <div>
-            <Button type="submit" variant="outline">Submit</Button>
-          </div>
-        </form>
+              <p className="text-lg leading-relaxed">
+                {data.content}
+              </p>
+            </div>
+
+            {/* Image Section */}
+            <div className="lg:w-2/5 flex justify-center">
+              <Image
+                src={data.imageUrl || "https://media.istockphoto.com/id/1458782106/photo/scenic-aerial-view-of-the-mountain-landscape-with-a-forest-and-the-crystal-blue-river-in.jpg?s=1024x1024&w=is&k=20&c=iPdhO2H3jeYh4UWmNlrXNmiiK04iaLykIMiD9u1yDq4="}
+                alt={data.title}
+                width={300}
+                height={300}
+              />
+            </div>
+          </section>
+
+          {/* Why Zustand Section */}
+          <section className="mt-16">
+            <h2 className="text-3xl font-bold mb-4">Why you should learn Zustand?</h2>
+            <p className="text-lg leading-relaxed">
+              {/* Additional content here */}
+              {data.description}
+            </p>
+          </section>
+
+          {/* Most Popular Section */}
+          <section className="mt-16">
+            <h3 className="text-2xl font-bold mb-4">Most Popular</h3>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Example items */}
+              <li className="p-4 rounded-lg hover:shadow-lg">
+                <p className="text-sm">Travel</p>
+                <h4 className="font-bold text-lg mt-2">A Journey Through Bohemian Beauty</h4>
+                <p className="text-sm mt-1">Exploring the Streets of Prague</p>
+              </li>
+              <li className="p-4 rounded-lg hover:shadow-lg">
+                <p className="text-sm">Culture</p>
+                <h4 className="font-bold text-lg mt-2">Navigating First Impressions</h4>
+                <p className="text-sm mt-1">Introduce Yourself</p>
+              </li>
+              <li className="p-4 rounded-lg hover:shadow-lg">
+                <p className="text-sm">Food</p>
+                <h4 className="font-bold text-lg mt-2">My Favorite Authentic Italian Pasta Dishes</h4>
+              </li>
+            </ul>
+          </section>
+        </main>
       </div>
     </div>
   );
 };
 
-export default WriteBlog;
+export default Page;
