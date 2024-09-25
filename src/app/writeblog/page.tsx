@@ -1,15 +1,14 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button"
 
-
 const WriteBlog = () => {
   const [image, setImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -19,24 +18,46 @@ const WriteBlog = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle the form submission (e.g., send data to the backend)
-    console.log({
-      image,
-      title,
-      description,
-      author,
-    });
+    
+    if (!image) {
+      alert('Please upload an image');
+      return;
+    }
 
-    alert("Blog submitted successfully!");
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('author', author);
 
-    // Reset form
-    setImage(null);
-    setPreviewImage(null);
-    setTitle("");
-    setDescription("");
-    setAuthor("");
+    try {
+      const res = await fetch('/api/blogpost', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log('Blog post created:', data);
+        alert("Blog submitted successfully!");
+
+        // Reset form
+        setImage(null);
+        setTitle("");
+        setDescription("");
+        setAuthor("");
+        setPreviewImage(null);
+      } else {
+        const error = await res.json();
+        console.error('Error:', error);
+        alert("Failed to submit the blog.");
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      alert("Error occurred during submission.");
+    }
   };
 
   return (
@@ -105,8 +126,7 @@ const WriteBlog = () => {
 
           {/* Submit Button */}
           <div>
-          <Button variant="outline">Submit</Button>
-
+            <Button variant="outline" type="submit">Submit</Button>
           </div>
         </form>
       </div>

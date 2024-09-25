@@ -45,3 +45,40 @@ export async function GET(request: Request, { params }: { params: { slug: string
     return NextResponse.json({ message: 'Blog post not found' }, { status: 404 });
   }
 }
+
+
+import { NextResponse, NextRequest } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+
+// Initialize Prisma Client
+const prisma = new PrismaClient();
+
+export async function GET(req: NextRequest) {
+  try {
+    // Extract 'id' from the request URL
+    const url = new URL(req.url);
+    const id = url.searchParams.get('id');  // Get the 'id' from query params
+
+    if (!id) {
+      return NextResponse.json({ message: 'ID parameter is required' }, { status: 400 });
+    }
+
+    // Fetch a specific blog post by its 'id'
+    const blogPost = await prisma.blogpost.findUnique({
+      where: {
+        id: parseInt(id),  // Parse the 'id' as an integer
+      },
+    });
+
+    // If blog post is found, return it as a JSON response
+    if (blogPost) {
+      return NextResponse.json(blogPost, { status: 200 });
+    } else {
+      // If no blog post found with the provided id
+      return NextResponse.json({ message: 'Blog post not found' }, { status: 404 });
+    }
+  } catch (error: any) {
+    // Handle any errors
+    return NextResponse.json({ message: error.message }, { status: 500 });
+  }
+}

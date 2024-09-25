@@ -7,19 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model empname {
-  name String? @db.VarChar(50)
 
-  @@ignore
-}
 
-model Blog{
+model Blogpost{
   id Int @id @default(autoincrement())
+  image String
   title   String 
   description String
-  image String
   author String
-
 }
+
 
