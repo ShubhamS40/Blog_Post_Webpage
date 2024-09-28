@@ -1,12 +1,17 @@
 'use client';
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css'; // React Quill CSS
+
+// Dynamically import ReactQuill with no SSR
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const WriteBlog = () => {
   const [image, setImage] = useState<File | null>(null);
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(""); // For ReactQuill, keep description as a string
   const [author, setAuthor] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -29,7 +34,7 @@ const WriteBlog = () => {
     const formData = new FormData();
     formData.append('image', image);
     formData.append('title', title);
-    formData.append('description', description);
+    formData.append('description', description); // Quill's HTML content
     formData.append('author', author);
 
     try {
@@ -46,7 +51,7 @@ const WriteBlog = () => {
         // Reset form
         setImage(null);
         setTitle("");
-        setDescription("");
+        setDescription(""); // Reset description to empty string
         setAuthor("");
         setPreviewImage(null);
       } else {
@@ -62,7 +67,7 @@ const WriteBlog = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full border-2  space-y-8 p-10 rounded-lg shadow-lg">
+      <div className="max-w-lg w-full border-2 space-y-8 p-10 rounded-lg shadow-lg">
         <h2 className="text-center text-3xl font-extrabold">Write a New Blog</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Image Upload */}
@@ -98,18 +103,18 @@ const WriteBlog = () => {
             />
           </div>
 
-          {/* Description Input */}
+          {/* Description Input with ReactQuill */}
           <div>
-            <label className="block text-sm font-medium">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              placeholder="Write a short description"
-            />
-          </div>
+  <label className="block text-sm font-medium">Description</label>
+  <ReactQuill
+    value={description}
+    onChange={setDescription} // Updates description content
+    placeholder="Write the blog content here..."
+    className="rounded-lg border border-gray-300" // Increased height
+    theme="snow" // Default theme
+  />
+</div>
+
 
           {/* Author Input */}
           <div>

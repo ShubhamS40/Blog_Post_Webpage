@@ -2,7 +2,7 @@
 
 export default {
     images: {
-      domains: ['www.skillvertex.com','media.istockphoto.com'], // Add external domains here
+      domains: ['imgs.search.brave.com','www.skillvertex.com','lyxyimlrzsnjyhatlywr.supabase.co','media.istockphoto.com'], // Add external domains here
     },
   };
   

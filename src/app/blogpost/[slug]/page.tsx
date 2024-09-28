@@ -37,72 +37,67 @@ const Page = ({ params }: PageProps) => {
   }, [slug]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="flex items-center justify-center h-screen">Error: {error}</div>;
   }
 
   if (!data) {
-    return <div>No data found</div>;
+    return <div className="flex items-center justify-center h-screen">No data found</div>;
   }
 
   return (
-    <div className="min-h-screen font-sans">
+    <div className="min-h-screen">
       <main className="px-8 py-16">
+        {/* Article Section */}
         <section className="flex flex-col lg:flex-row items-center lg:items-start justify-between space-y-8 lg:space-y-0 lg:space-x-12">
-          {/* Article Information */}
           <div className="lg:w-3/5">
-            <h1 className="text-4xl font-bold mb-6">{data.title}</h1>
+            <h1 className="mb-6 text-2xl font-mono font-bold">TITLE: {data.title}</h1>
             <div className="flex items-center space-x-2 mb-4">
               <Image
-                src={data.authorImage || "https://www.skillvertex.com/blog/wp-content/uploads/2023/12/Data-Science-2024-01-03T152151.126-1.png"}
+                src={data.authorImage || "https://imgs.search.brave.com/B9tDsc8b4pK8dNXxe5X6MY3mUQhJsqjgaYP8vQfLHRE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jcm9w/LWNpcmNsZS5pbWFn/ZW9ubGluZS5jby9j/cm9wLWNpcmNsZS5w/bmc"}
                 alt={data.author}
                 width={40}
                 height={40}
                 className="rounded-full"
               />
-              <p className="text-sm">{data.author}</p>
+              <p className='text-lg  font-bold'>author : {data.author}</p>
             </div>
-            <p className="text-lg leading-relaxed">{data.content}</p>
+            <h2 className="mb-4 font-bold">{data.description}</h2>
           </div>
 
           {/* Image Section */}
-          <div className="lg:w-2/5 flex justify-center">
+          <div className="lg:w-2/5 rounded-2xl flex border-2  p-4  justify-center">
             <Image
-              src={data.imageUrl || "https://media.istockphoto.com/id/1458782106/photo/scenic-aerial-view-of-the-mountain-landscape-with-a-forest-and-the-crystal-blue-river-in.jpg?s=1024x1024&w=is&k=20&c=iPdhO2H3jeYh4UWmNlrXNmiiK04iaLykIMiD9u1yDq4="}
+              src={data.image || "https://media.istockphoto.com/id/1458782106/photo/scenic-aerial-view-of-the-mountain-landscape-with-a-forest-and-the-crystal-blue-river-in.jpg?s=1024x1024&w=is&k=20&c=iPdhO2H3jeYh4UWmNlrXNmiiK04iaLykIMiD9u1yDq4="}
               alt={data.title}
-              width={300}
-              height={300}
+              width={600}
+              height={400}
+              className=" rounded-xl"
             />
           </div>
         </section>
 
-        {/* Why Zustand Section */}
-        <section className="mt-16">
-          <h2 className="text-3xl font-bold mb-4">Why you should learn Zustand?</h2>
-          <p className="text-lg leading-relaxed">{data.zustandContent}</p>
-        </section>
-
         {/* Most Popular Section */}
         <section className="mt-16">
-          <h3 className="text-2xl font-bold mb-4">Most Popular</h3>
+          <h3 className="mb-4">Most Popular</h3>
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Example items */}
-            <li className="p-4 rounded-lg hover:shadow-lg">
-              <p className="text-sm">Travel</p>
-              <h4 className="font-bold text-lg mt-2">A Journey Through Bohemian Beauty</h4>
-              <p className="text-sm mt-1">Exploring the Streets of Prague</p>
+            <li className="p-6 rounded-lg shadow-lg transition-all duration-300">
+              <p>Travel</p>
+              <h4 className="mt-2">A Journey Through Bohemian Beauty</h4>
+              <p className="mt-1">Exploring the Streets of Prague</p>
             </li>
-            <li className="p-4 rounded-lg hover:shadow-lg">
-              <p className="text-sm">Culture</p>
-              <h4 className="font-bold text-lg mt-2">Navigating First Impressions</h4>
-              <p className="text-sm mt-1">Introduce Yourself</p>
+            <li className="p-6 rounded-lg shadow-lg transition-all duration-300">
+              <p>Culture</p>
+              <h4 className="mt-2">Navigating First Impressions</h4>
+              <p className="mt-1">Introduce Yourself</p>
             </li>
-            <li className="p-4 rounded-lg hover:shadow-lg">
-              <p className="text-sm">Food</p>
-              <h4 className="font-bold text-lg mt-2">My Favorite Authentic Italian Pasta Dishes</h4>
+            <li className="p-6 rounded-lg shadow-lg transition-all duration-300">
+              <p>Food</p>
+              <h4 className="mt-2">My Favorite Authentic Italian Pasta Dishes</h4>
             </li>
           </ul>
         </section>

@@ -66,7 +66,7 @@ function CardBlog() {
           </div>
           <div className="p-4">
             <h1 className="text-lg font-semibold mb-2">{blog.title}</h1>
-            <p className="text-sm mb-2">{blog.description}</p>
+            <p className="text-sm font-bold mb-2">{blog.description.substring(0,150)}...........</p>
             <p className="text-xs mb-2 text-gray-500">{blog.author}</p>
             <Link href={`/blogpost/${blog.id}`}>  {/* Use id for the link */}
               <Button variant="outline">Read More</Button>
